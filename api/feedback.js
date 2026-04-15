@@ -1,12 +1,7 @@
 import { Client } from "pg";
-import nodemailer from "nodemailer";
 
 const connectionString = process.env.DATABASE_URL;
-const smtpHost = process.env.SMTP_HOST;
-const smtpPort = process.env.SMTP_PORT;
-const smtpUser = process.env.SMTP_USER;
-const smtpPass = process.env.SMTP_PASS;
-const emailTo = process.env.EMAIL_TO;
+const formspreeId = process.env.FORMSPREE_ID || "mlgagngr";
 
 async function createClient() {
   if (!connectionString) {
@@ -17,36 +12,24 @@ async function createClient() {
   return client;
 }
 
-async function sendFeedbackEmail(entry) {
-  if (!smtpHost || !smtpPort || !smtpUser || !smtpPass || !emailTo) {
-    throw new Error("SMTP configuration is not complete.");
+async function sendFeedbackToFormspree(entry) {
+  const formData = new FormData();
+  formData.append("name", entry.name || "Anonymous");
+  formData.append("school", entry.school || "—");
+  formData.append("stars", entry.stars);
+  formData.append("liked", entry.liked || "(none)");
+  formData.append("improve", entry.improve || "(none)");
+  formData.append("other", entry.other || "(none)");
+  formData.append("submitted_at", entry.ts || new Date().toISOString());
+
+  const resp = await fetch(`https://formspree.io/f/${formspreeId}`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!resp.ok) {
+    throw new Error(`Formspree error: ${resp.status}`);
   }
-
-  const transporter = nodemailer.createTransport({
-    host: smtpHost,
-    port: parseInt(smtpPort, 10),
-    secure: parseInt(smtpPort, 10) === 465,
-    auth: {
-      user: smtpUser,
-      pass: smtpPass,
-    },
-  });
-
-  const body = `New feedback submission:\n\n` +
-    `Name: ${entry.name || "Anonymous"}\n` +
-    `School/District: ${entry.school || "—"}\n` +
-    `Rating: ${entry.stars}\n` +
-    `Liked most: ${entry.liked || "(none)"}\n` +
-    `Needs improvement: ${entry.improve || "(none)"}\n` +
-    `Other comments: ${entry.other || "(none)"}\n` +
-    `Submitted at: ${entry.ts || new Date().toISOString()}\n`;
-
-  await transporter.sendMail({
-    from: smtpUser,
-    to: emailTo,
-    subject: "EduReport GH feedback submission",
-    text: body,
-  });
 }
 
 export default async function handler(req, res) {
@@ -64,10 +47,14 @@ export default async function handler(req, res) {
   let client;
 
   try {
-    if (smtpHost && smtpPort && smtpUser && smtpPass && emailTo) {
-      await sendFeedbackEmail(entry);
+    // Send to Formspree (non-fatal if it fails)
+    try {
+      await sendFeedbackToFormspree(entry);
+    } catch (e) {
+      console.warn("Formspree submission failed:", e.message);
     }
 
+    // Optionally save to database if configured
     if (connectionString) {
       client = await createClient();
       await client.query(`
@@ -103,3 +90,4 @@ export default async function handler(req, res) {
       await client.end();
     }
   }
+}
