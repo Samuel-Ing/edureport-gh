@@ -51,6 +51,16 @@ git push -u origin main
    - **Value:** `sk-ant-your-real-api-key`
    - **Name:** `DATABASE_URL`
    - **Value:** your Postgres connection string from Vercel Postgres
+   - **Name:** `SMTP_HOST`
+   - **Value:** `smtp.gmail.com` (or your SMTP server)
+   - **Name:** `SMTP_PORT`
+   - **Value:** `465`
+   - **Name:** `SMTP_USER`
+   - **Value:** your SMTP login email
+   - **Name:** `SMTP_PASS`
+   - **Value:** your SMTP password or app password
+   - **Name:** `EMAIL_TO`
+   - **Value:** `wendelgrant43@gmail.com`
 5. Click **Deploy**
 
 ✅ You get a live link like `https://edureport-gh.vercel.app`
