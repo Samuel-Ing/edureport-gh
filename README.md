@@ -49,6 +49,8 @@ git push -u origin main
 4. Under **Environment Variables**, add:
    - **Name:** `CLAUDE_API_KEY`
    - **Value:** `sk-ant-your-real-api-key`
+   - **Name:** `DATABASE_URL`
+   - **Value:** your Postgres connection string from Vercel Postgres
 5. Click **Deploy**
 
 ✅ You get a live link like `https://edureport-gh.vercel.app`
