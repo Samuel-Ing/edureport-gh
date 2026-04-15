@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Analytics } from "@vercel/analytics/react";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const SUBS = {
@@ -1170,6 +1171,7 @@ Data: ${JSON.stringify(payload)}`,
 
       {fbOpen  && <FeedbackModal onClose={() => setFbOpen(false)} onSubmit={submitFeedback} />}
       {tyEntry && <ThanksModal entry={tyEntry} onClose={() => setTyEntry(null)} />}
+      <Analytics />
     </div>
   );
 }
