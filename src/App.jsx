@@ -624,7 +624,8 @@ Data: ${JSON.stringify(payload)}`,
     "entry.1607990425": entry.name,        // Name
     "entry.1156874726": entry.stars,       // Rating (1–5)
     "entry.393457929": entry.school,       // School
-    "entry.855228025": entry.liked,        // Like (Option 1,2,3)
+    "entry.855228025": entry.liked,        // What did you like
+    "entry.1456925569": entry.improve,     // What needs improvement
     "entry.553828971": entry.other,        // Other comment
   });
 
@@ -632,7 +633,7 @@ Data: ${JSON.stringify(payload)}`,
     method: "POST",
     mode: "no-cors",
     body: params
-  });
+  }).catch(err => console.error("Form submission error:", err));
 
   setFbOpen(false);
   setTyEntry(entry);
