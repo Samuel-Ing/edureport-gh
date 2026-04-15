@@ -95,12 +95,11 @@ export default async function handler(req, res) {
     }
 
     return res.status(201).json(entry);
-    await client.query(`
+  } catch (error) {
     console.error("Feedback save error:", error);
     return res.status(500).json({ error: "Unable to save feedback." });
   } finally {
-    await client.end();
     if (client) {
       await client.end();
     }
-}
+  }
