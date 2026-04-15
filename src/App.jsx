@@ -617,7 +617,26 @@ Data: ${JSON.stringify(payload)}`,
     setStep(5);
   };
 
-  const submitFeedback = entry => { setFbOpen(false); setTyEntry(entry); };
+  const submitFeedback = entry => {
+  const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSc4kmLTJDodG7Nbg409pFt_NdGAR6PtSyKrV_rTREmqMaiYUA/formResponse";
+
+  const params = new URLSearchParams({
+    "entry.1607990425": entry.name,        // Name
+    "entry.1156874726": entry.stars,       // Rating (1–5)
+    "entry.393457929": entry.school,       // School
+    "entry.855228025": entry.liked,        // Like (Option 1,2,3)
+    "entry.553828971": entry.other,        // Other comment
+  });
+
+  fetch(formURL, {
+    method: "POST",
+    mode: "no-cors",
+    body: params
+  });
+
+  setFbOpen(false);
+  setTyEntry(entry);
+};
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
