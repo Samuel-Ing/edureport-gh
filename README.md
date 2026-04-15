@@ -50,7 +50,7 @@ git push -u origin main
    - **Name:** `CLAUDE_API_KEY`
    - **Value:** `sk-ant-your-real-api-key`
    - **Name:** `DATABASE_URL`
-   - **Value:** your Postgres connection string from Vercel Postgres
+   - **Value:** your Postgres connection string from Vercel Postgres (optional for database storage)
    - **Name:** `SMTP_HOST`
    - **Value:** `smtp.gmail.com` (or your SMTP server)
    - **Name:** `SMTP_PORT`
