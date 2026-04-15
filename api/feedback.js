@@ -97,7 +97,7 @@ export default async function handler(req, res) {
     return res.status(201).json(entry);
   } catch (error) {
     console.error("Feedback save error:", error);
-    return res.status(500).json({ error: "Unable to save feedback." });
+    return res.status(500).json({ error: "Unable to save feedback.", detail: error?.message || String(error) });
   } finally {
     if (client) {
       await client.end();

@@ -628,7 +628,14 @@ Data: ${JSON.stringify(payload)}`,
       if (!resp.ok) {
         const errorText = await resp.text();
         console.error("Feedback API error:", resp.status, errorText);
-        alert("Unable to save feedback. Please try again later.");
+        let message = errorText;
+        try {
+          const json = JSON.parse(errorText);
+          message = json.detail || json.error || errorText;
+        } catch {
+          message = errorText;
+        }
+        alert("Unable to save feedback. " + message);
         return;
       }
 
