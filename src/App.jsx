@@ -617,27 +617,29 @@ Data: ${JSON.stringify(payload)}`,
     setStep(5);
   };
 
-  const submitFeedback = entry => {
-  const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSc4kmLTJDodG7Nbg409pFt_NdGAR6PtSyKrV_rTREmqMaiYUA/formResponse";
+  const submitFeedback = async entry => {
+    try {
+      const resp = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(entry),
+      });
 
-  const params = new URLSearchParams({
-    "entry.1607990425": entry.name,        // Name
-    "entry.1156874726": entry.stars,       // Rating (1–5)
-    "entry.393457929": entry.school,       // School
-    "entry.855228025": entry.liked,        // What did you like
-    "entry.1456925569": entry.improve,     // What needs improvement
-    "entry.553828971": entry.other,        // Other comment
-  });
+      if (!resp.ok) {
+        const errorText = await resp.text();
+        console.error("Feedback API error:", resp.status, errorText);
+        alert("Unable to save feedback. Please try again later.");
+        return;
+      }
 
-  fetch(formURL, {
-    method: "POST",
-    mode: "no-cors",
-    body: params
-  }).catch(err => console.error("Form submission error:", err));
-
-  setFbOpen(false);
-  setTyEntry(entry);
-};
+      const saved = await resp.json();
+      setFbOpen(false);
+      setTyEntry(saved);
+    } catch (error) {
+      console.error("Feedback submission failed:", error);
+      alert("Unable to save feedback. Please try again later.");
+    }
+  };
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
