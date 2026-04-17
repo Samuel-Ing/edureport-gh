@@ -615,6 +615,8 @@ Data: ${JSON.stringify(payload)}`,
     setLoading(false);
     setSelIdx(0);
     setStep(5);
+    // Auto-trigger feedback modal after 1.2s for beta testing
+    setTimeout(() => setFbOpen(true), 1200);
   };
 
   const submitFeedback = async entry => {
